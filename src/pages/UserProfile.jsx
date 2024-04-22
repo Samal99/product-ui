@@ -12,8 +12,43 @@ function UserProfile() {
 
     const navigate = useNavigate()
 
-    
+    React.useEffect(() => {
+        const requestOptions = {
+            method: "GET", // Specify the request method
+            headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem('token') }, // Specify the content type
+        };
 
+        fetch(`${apiUrl}users/userDetails/${localStorage.getItem('data')}`, requestOptions)
+            .then((res) => res.json())
+            .then((data) => {
+                setPosts(data.data[0])
+                if (data.status === 1) {
+                    console.log('initialValues',initialValues)
+                    if (data && data.data && !data.data.length) {
+                        navigate('/login')
+                    }
+                } else {
+                    navigate('/login')
+                }
+            })
+            .catch((err) => {
+                navigate('/login')
+                console.log('err', err);
+            });
+
+    }, [])
+
+    const initialValues = { 
+        f_name: posts.f_name, 
+        contact: posts.contact, 
+        email: posts.email, 
+        position: posts.position, 
+        ref_id: posts.ref_id 
+        
+    }
+
+
+ 
 
     return (
         <div className="content-wrapper">
@@ -36,7 +71,7 @@ function UserProfile() {
                             </div>
                         </div>
                         <div className="col-md-8">
-                            <Form onSubmit={handelSubmit}>
+                            <Form >
                                 <div className="row">
                                     <div className="col-md-6">
                                         <div className="form-group">
